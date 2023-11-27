@@ -8,7 +8,7 @@ import java.io.InputStreamReader;
 import org.json.JSONObject;
 import org.json.JSONArray;
 
-class ja_copy {
+class doit_5_2 {
     public static void main(String[] args) throws FileNotFoundException {
         try {
             String jsonSrc = jsonFileToString("doit_5_2.json");
