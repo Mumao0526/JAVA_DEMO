@@ -3,6 +3,7 @@
     "java.project.outputPath": "bin",
     "java.project.referencedLibraries": [
         "lib/**/*.jar",
-        "java-json.jar"
+        "java-json.jar",
+        "/Users/mumao/Downloads/mqtt.jar"
     ]
 }
