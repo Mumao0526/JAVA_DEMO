@@ -10,7 +10,7 @@
 <%
 /*
  * << Introduction to Production Data Center Course >>
- * API: http://140.128.88.190:3649/test/do_6_3.jsp
+ * This API: http://140.128.88.190:3649/test/do_6_3.jsp
  *
  * PURPOSE: Get barcode which Timestamp between startTime and endTime.
  * EXAMPLE:

@@ -8,6 +8,8 @@ import java.io.InputStreamReader;
 import org.json.JSONObject;
 import org.json.JSONArray;
 
+/* Read Json file and find the barcode we want */
+
 class doit_5_2 {
     public static void main(String[] args) throws FileNotFoundException {
         try {
@@ -19,8 +21,8 @@ class doit_5_2 {
                 String barcode = obj_json.getString("Barcode");
                 String timestamp = obj_json.getString("Timestamp");
 
-                if(barcode.equals("95M00047"))
-                {
+                // find barcode:95M00047
+                if (barcode.equals("95M00047")) {
                     System.out.println("{\"Barcode\":\"95M00047\",\"Timestamp\":\"" + timestamp + "\"}");
                 }
 
@@ -31,12 +33,14 @@ class doit_5_2 {
 
     }
 
-    public static String jsonFileToString(String path) throws IOException{
+    public static String jsonFileToString(String path) throws IOException {
         StringBuilder result = new StringBuilder();
         InputStream in = new FileInputStream(path);
         InputStreamReader isr = new InputStreamReader(in, "UTF-8");
         BufferedReader buf = new BufferedReader(isr);
         String line = null;
+
+        // pop the file contents line by line util empty
         while ((line = buf.readLine()) != null) {
             result.append(System.lineSeparator() + line);
         }
