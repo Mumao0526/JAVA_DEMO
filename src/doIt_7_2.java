@@ -7,6 +7,7 @@ import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.List;
 
 import org.fusesource.mqtt.client.BlockingConnection;
 import org.fusesource.mqtt.client.MQTT;
@@ -55,7 +56,7 @@ public class doIt_7_2 {
                         getData.add(msgContent);
                     } else {
                         try {
-                            String feedback = sendDataToAPI(toJsonFormatString(getData), API);
+                            String feedback = sendDataToAPI(convertToJSON(getData), API);
                             System.out.println("API Response: " + feedback);
                         } catch (Exception e) {
                             e.printStackTrace();
@@ -72,7 +73,7 @@ public class doIt_7_2 {
         }
     }
 
-    public static String sendDataToAPI(String json, String API) throws IOException {
+    private static String sendDataToAPI(String json, String API) throws IOException {
         String jsonPayload = json;
 
         // Startup Connection
@@ -102,10 +103,18 @@ public class doIt_7_2 {
         return resultStr;
     }
 
-    public static String toJsonFormatString(ArrayList data) {
+    private static String convertToJSON(ArrayList<String> data) {
         JSONObject answer = new JSONObject();
+        List<Integer> result = new ArrayList<>(data.size());
+
+        // convert to integer list
+        for (String s : data) {
+            result.add(Integer.valueOf(s));
+        }
+
+        // put in json
         try {
-            answer.append("data", data.toString());
+            answer.put("null", result);
         } catch (JSONException e) {
             e.printStackTrace();
         }

@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.util.List;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -11,16 +12,20 @@ public class fortest {
             nnn += "1";
             getData.add(nnn);
         }
-        System.out.println(toJsonFormatString(getData));
+        System.out.println(convertToJSON(getData));
     }
 
-    public static String toJsonFormatString(ArrayList data) {
+    private static String convertToJSON(ArrayList<String> data) {
         JSONObject answer = new JSONObject();
+        List<Integer> result = new ArrayList<>(data.size());
+
+        for (String s : data) {
+            result.add(Integer.valueOf(s));
+        }
 
         try {
-            answer.append("data", data.toString());
+            answer.put("null", result);
         } catch (JSONException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
         return answer.toString();
