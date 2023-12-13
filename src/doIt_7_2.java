@@ -6,7 +6,9 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.fusesource.mqtt.client.BlockingConnection;
@@ -105,16 +107,20 @@ public class doIt_7_2 {
 
     private static String convertToJSON(ArrayList<String> data) {
         JSONObject answer = new JSONObject();
-        List<Integer> result = new ArrayList<>(data.size());
+        List<Integer> intList = new ArrayList<>(data.size());
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        Date now = new Date();
+        String formattedDate = dateFormat.format(now);  // Get time for now
 
         // convert to integer list
         for (String s : data) {
-            result.add(Integer.valueOf(s));
+            intList.add(Integer.valueOf(s));
         }
 
         // put in json
         try {
-            answer.put("null", result);
+            answer.put("timeStamp", formattedDate);
+            answer.put("data", intList);
         } catch (JSONException e) {
             e.printStackTrace();
         }

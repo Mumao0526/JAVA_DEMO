@@ -10,7 +10,9 @@ import org.json.JSONObject;
 
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.io.OutputStream;
 import java.io.BufferedReader;
@@ -19,7 +21,7 @@ import java.io.InputStreamReader;
 public class doIt_7_2_2 {
     private static final int BUFFER_SIZE = 10;
     private static ArrayList<String> messageBuffer = new ArrayList<>();
-    private static final String MQTT_BROKER = "tcp://192.168.0.49:8002";
+    private static final String MQTT_BROKER = "tcp://192.168.0.40:8002";
     private static final String MQTT_TOPIC = "CDC72";
     private static final String API_URL = "http://140.128.88.190:3640/test/doIt72.jsp";
 
@@ -106,18 +108,23 @@ public class doIt_7_2_2 {
         }
         return resultStr;
     }
+
     private static String convertToJSON(ArrayList<String> data) {
         JSONObject answer = new JSONObject();
-        List<Integer> result = new ArrayList<>(data.size());
+        List<Integer> intList = new ArrayList<>(data.size());
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        Date now = new Date();
+        String formattedDate = dateFormat.format(now);  // Get time for now
 
         // convert to integer list
         for (String s : data) {
-            result.add(Integer.valueOf(s));
+            intList.add(Integer.valueOf(s));
         }
 
         // put in json
         try {
-            answer.put("null", result);
+            answer.put("timeStamp", formattedDate);
+            answer.put("data", intList);
         } catch (JSONException e) {
             e.printStackTrace();
         }
