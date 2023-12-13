@@ -1,4 +1,4 @@
-import edu.emory.mathcs.backport.java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeUnit;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -8,95 +8,107 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
 
-import javax.annotation.processing.Messager;
-
 import org.fusesource.mqtt.client.BlockingConnection;
 import org.fusesource.mqtt.client.MQTT;
 import org.fusesource.mqtt.client.Message;
 import org.fusesource.mqtt.client.QoS;
 import org.fusesource.mqtt.client.Topic;
-import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 /* Get data form MQTT and send to API */
 
 public class doIt_7_2 {
     public static void main(String[] args) {
-        int coun = 10;
-        int counter = 10;
-        String API = "";
-        ArrayList<String> getData = new ArrayList<String>();
+        ArrayList<String> getData = new ArrayList<String>(); // data buffer
+        int coun = 10; // data quantity
+        String API = "http://140.128.88.190:3640/test/doIt64_sample.jsp";
+
+        String MQTT_host = "192.168.0.49";
+        int MQTT_port = 8002;
+        String MQTT_topicName = "CDC72";
+
         try {
+            // Connect to MQTT
             MQTT mqtt = new MQTT();
-            mqtt.setHost("192.168.0.49", 8002);
+            mqtt.setHost(MQTT_host, MQTT_port);
             BlockingConnection con = mqtt.blockingConnection();
+
+            // Attempting to connect
             con.connect();
+            System.out.println("Connected to MQTT Broker at " + MQTT_host + ":" + MQTT_port);
 
-            Topic[] topics = { new Topic("CDC72", QoS.EXACTLY_ONCE) };
+            // Set subscribe topic
+            Topic[] topics = { new Topic(MQTT_topicName, QoS.EXACTLY_ONCE) };
             con.subscribe(topics);
+            System.out.println("Subscribed to topic: " + MQTT_topicName);
 
+            System.out.println("Start!");
+
+            // waiting for data
             while (true) {
-                Message message = con.receive(1, TimeUnit.SECONDS);
+                Message message = con.receive(1, TimeUnit.SECONDS); // require data by 1 times/seconds
                 if (message != null) {
-                    if (counter <= coun) {
-                        getData.add(message.toString());
-                        counter--;
-                    }
-                    if (getData.size() >= coun) {
+                    String msgContent = new String(message.getPayload());
+                    System.out.println("Get data from MQTT: " + msgContent);
+                    if (getData.size() < coun) {
+                        getData.add(msgContent);
+                    } else {
                         try {
-                            sendDataToAPI(toJSONObject(getData), API);
+                            String feedback = sendDataToAPI(toJsonFormatString(getData), API);
+                            System.out.println("API Response: " + feedback);
                         } catch (Exception e) {
-                            // TODO: handle exception
+                            e.printStackTrace();
                         }
+                        getData.clear();    // flush data buffer
                     }
+                } else {
+                    System.out.println("No message received within the time limit.");
                 }
 
             }
         } catch (Exception e) {
-            // TODO: handle exception
             e.printStackTrace();
         }
     }
 
-    public static void sendDataToAPI(JSONObject json, String API) throws IOException {
-        String api = "http://140.128.88.190:3640/test/doIt64_sample.jsp";
-        String jsonPayload = jsonToString(json);
+    public static String sendDataToAPI(String json, String API) throws IOException {
+        String jsonPayload = json;
 
         // Startup Connection
-        URL url = new URL(api);
-        HttpURLConnection con = (HttpURLConnection)url.openConnection();
+        URL url = new URL(API);
+        HttpURLConnection con = (HttpURLConnection) url.openConnection();
         con.setRequestMethod("POST");
         con.setRequestProperty("Content-Type", "application/json; utf-8");
         con.setRequestProperty("Accept", "application/json");
         con.setDoOutput(true);
 
-
-        try(OutputStream os = con.getOutputStream()){
+        try (OutputStream os = con.getOutputStream()) {
             byte[] input = jsonPayload.getBytes("utf-8");
             os.write(input, 0, input.length);
-        }catch(Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
         String resultStr = "";
-        try(BufferedReader br = new BufferedReader(new InputStreamReader(con.getInputStream(), "utf-8"))){
+        try (BufferedReader br = new BufferedReader(new InputStreamReader(con.getInputStream(), "utf-8"))) {
             StringBuilder r = new StringBuilder();
             String responseLine = null;
-            while((responseLine = br.readLine()) != null){
+            while ((responseLine = br.readLine()) != null) {
                 r.append(responseLine.trim());
             }
-            resultStr += r. toString();
+            resultStr += r.toString();
         }
-        System.out.println(resultStr);
-
+        System.out.println(resultStr); // debug
+        return resultStr;
     }
 
-    public static JSONObject toJSONObject(ArrayList data) {
+    public static String toJsonFormatString(ArrayList data) {
         JSONObject answer = new JSONObject();
-        return answer;
-    }
-
-    public static String jsonToString(JSONObject json) {
-
-        return "";
+        try {
+            answer.append("data", data.toString());
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return answer.toString();
     }
 }
