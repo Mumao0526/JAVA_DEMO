@@ -4,6 +4,7 @@
     "java.project.referencedLibraries": [
         "lib/**/*.jar",
         "java-json.jar",
-        "/Users/mumao/Downloads/mqtt.jar"
+        "/Users/mumao/Downloads/mqtt.jar",
+        "/Users/mumao/Downloads/org.eclipse.paho.client.mqttv3-1.2.5.jar"
     ]
 }
