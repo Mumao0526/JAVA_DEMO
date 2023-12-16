@@ -1,0 +1,3 @@
+Access IP: 140.128.88.190:3049
+Code Path: home/brown/MQTT/doIt_7_2.java
+Run: $java -cp .:java-json.jar:org.eclipse.paho.client.mqttv3-1.2.5.jar doIt_7_2

@@ -18,7 +18,8 @@ import java.io.OutputStream;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 
-/* Data from MQTT:
+/* <I/O Format>
+ * Data from MQTT:
  * 1234
  * 12435
  * 3456
@@ -30,6 +31,9 @@ import java.io.InputStreamReader;
  * "timeStamp": "2022-05-16 09:31:17",
  * "data": [3179, 1353, 2866, 3215, 1468, 2836, 3046, 3109, 4338, 1468 ]
  * }
+ *
+ * <How to RUN>
+ * Terminal-> java -cp .:java-json.jar:org.eclipse.paho.client.mqttv3-1.2.5.jar doIt_7_2_2
  */
 public class doIt_7_2_2 {
     private static final int BUFFER_SIZE = 10;
